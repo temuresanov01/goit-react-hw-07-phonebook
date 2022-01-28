@@ -22,7 +22,7 @@ const ContactsList = () => {
       {contactsList.map(el => {
         return (
           <li key={el.id}>
-            {el.name + ':' + el.number}{' '}
+            {el.name + ':' + el.phone}{' '}
             <button
               onClick={event => {
                 console.log();
