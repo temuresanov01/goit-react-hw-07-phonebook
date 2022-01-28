@@ -1,27 +1,43 @@
-import PropTypes from 'prop-types';
-import ContactListItem from './ContactListItem/ContactListItem';
-import s from './ContactList.module.css';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  fetchContactsList,
+  deleteContactsOps,
+} from '../../redux/contacts/contactsOperations';
 
-function ContactList({ filterContacts, handleDelete }) {
+const ContactsList = () => {
+  const dispatch = useDispatch();
+  const filter = useSelector(state => state.contacts.filter);
+  const contacts = useSelector(state => {
+    return state.contacts.contacts;
+  });
+
+  const contactsList = contacts.filter(item => {
+    return item.name.toLowerCase().includes(filter.toLowerCase());
+  });
+  fetchContactsList();
+  useEffect(() => dispatch(fetchContactsList()), [dispatch]);
   return (
-    <div className={s.mainContainer}>
-      <ul>
-        <p className={s.ContactList}>Contact List</p>
-        {filterContacts.map(contact => (
-          <ContactListItem
-            contact={contact}
-            key={contact.id}
-            handleDelete={handleDelete}
-          />
-        ))}
-      </ul>
-    </div>
+    <ul>
+      {contactsList.map(el => {
+        return (
+          <li key={el.id}>
+            {el.name + ':' + el.number}{' '}
+            <button
+              onClick={event => {
+                console.log();
+                dispatch(deleteContactsOps(event.target.id));
+              }}
+              id={el.id}
+              type="button"
+            >
+              Delete
+            </button>
+          </li>
+        );
+      })}
+    </ul>
   );
-}
-
-ContactList.propTypes = {
-  filterContacts: PropTypes.array.isRequired,
-  handleDelete: PropTypes.func.isRequired,
 };
 
-export default ContactList;
+export default ContactsList;

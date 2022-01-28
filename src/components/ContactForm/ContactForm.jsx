@@ -1,66 +1,57 @@
-import React, { useState } from 'react';
-import { nanoid } from 'nanoid';
 import s from './ContactForm.module.css';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../../redux/contacts/contactsOperations';
 
-const ContactForm = ({ addNewContact }) => {
+function ContactForm() {
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [number, setNumber] = useState(null);
+  const contacts = useSelector(data => data.contacts.contacts);
 
-  const reset = () => {
-    setName('');
-    setNumber('');
+  const onChangeName = e => {
+    setName(e.target.value);
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    addNewContact({ name, number, id: nanoid() });
-    reset();
+  const onChangeNumber = e => {
+    setNumber(e.target.value);
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className={s.mainForm}>
-        <div className={s.inputContainer}>
-          <label className={s.labelName} htmlFor="text">
-            Name
-          </label>
-          <input
-            className={s.inputName}
-            label="last"
-            type="text"
-            name="name"
-            id="text"
-            value={name}
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Rosie Simpson,  d'Artagnan и т. п."
-            required
-            placeholder="Enter Name"
-            onChange={e => setName(e.target.value)}
-          />
-        </div>
-        <div className={s.inputContainer}>
-          <label className={s.labelName} htmlFor="tel">
-            Number
-          </label>
-          <input
-            className={s.inputName}
-            type="tel"
-            name="number"
-            id="tel"
-            value={number}
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
-            required
-            placeholder="Enter Number"
-            onChange={e => setNumber(e.target.value)}
-          />
-        </div>
-        <button className={s.buttonAddContact} type="submit">
-          Add contact
-        </button>
-      </form>
-    </>
+    <form
+      onSubmit={e => {
+        e.preventDefault();
+        const isIncluded = contacts.some(el => el.name === name);
+
+        if (isIncluded) {
+          alert('This name already exist in your contacts!');
+          return;
+        }
+        dispatch(addContact({ name, number }));
+      }}
+      className={s.formStyle}
+    >
+      <p>Name</p>
+      <input
+        onChange={onChangeName}
+        type="text"
+        name="name"
+        pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+        title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+        required
+      />
+      <p>Phone</p>
+      <input
+        onChange={onChangeNumber}
+        type="tel"
+        name="number"
+        pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+        title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+        required
+      />
+      <button type="submit">Add Contact</button>
+    </form>
   );
-};
+}
 
 export default ContactForm;
