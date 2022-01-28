@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import s from './ContactList.module.css';
 import {
   fetchContactsList,
   deleteContactsOps,
@@ -18,25 +19,30 @@ const ContactsList = () => {
   fetchContactsList();
   useEffect(() => dispatch(fetchContactsList()), [dispatch]);
   return (
-    <ul>
-      {contactsList.map(el => {
-        return (
-          <li key={el.id}>
-            {el.name + ':' + el.phone}{' '}
-            <button
-              onClick={event => {
-                console.log();
-                dispatch(deleteContactsOps(event.target.id));
-              }}
-              id={el.id}
-              type="button"
-            >
-              Delete
-            </button>
-          </li>
-        );
-      })}
-    </ul>
+    <div className={s.mainContainer}>
+      <ul>
+        <p className={s.ContactList}>Contact List</p>
+        {contactsList.map(el => {
+          return (
+            <li className={s.newContact} key={el.id}>
+              <p className={s.newContactName}>{el.name + ' : ' + el.phone} </p>
+
+              <button
+                className={s.btn}
+                onClick={event => {
+                  console.log();
+                  dispatch(deleteContactsOps(event.target.id));
+                }}
+                id={el.id}
+                type="button"
+              >
+                Delete
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 };
 
