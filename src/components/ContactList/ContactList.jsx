@@ -25,7 +25,7 @@ const ContactsList = () => {
         {contactsList.map(el => {
           return (
             <li className={s.newContact} key={el.id}>
-              <p className={s.newContactName}>{el.name + ' : ' + el.phone} </p>
+              <p className={s.newContactName}>{el.name + ' : ' + el.number} </p>
 
               <button
                 className={s.btn}
